@@ -35,11 +35,12 @@ namespace hotelExtrados.Services
                 var validate = connectSql.QuerySingleOrDefault<UserControl>(sqlValidate, new{ name_User });
                 if (validate == null) return false; else return true;
 
-                SqlBinary sqlBinary = validate.Salt_Password;
-                byte[] byteArray = sqlBinary.Value;
+                // Este intento de transformar antes y recién pasarlo como parametro en la función Hash - no funcionó tampoco.
+                //SqlBinary sqlBinary = validate.Salt_Password;
+                //byte[] byteArray = sqlBinary.Value;
                 try
                 {
-                    var validPassword = Hash(passwordInput, byteArray);
+                    var validPassword = Hash(passwordInput, (byte[])validate.Salt_Password);
                     if (validPassword == validate.Hash_Password) return true; else return false;
                 }
                 catch (Exception)

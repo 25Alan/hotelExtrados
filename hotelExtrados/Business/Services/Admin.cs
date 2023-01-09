@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace hotelExtrados.Business.Services
 {
-    internal class Admin
+    public class Admin
     {
+
     }
 }

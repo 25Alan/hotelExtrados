@@ -1,0 +1,21 @@
+﻿use hotelExtrados
+GO
+
+CREATE PROCEDURE newUserRegister
+    @nameUser VARCHAR(20),
+    @passwordUser VARCHAR(20),
+    @saltPassword VARBINARY(MAX),
+    @hashPassword VARBINARY(MAx),
+    @statusAap bit,
+    @statusAdmin bit
+AS
+BEGIN
+    INSERT INTO [dbo].[listUser]
+    ([name_User]
+    ,[password_User]
+    ,[salt_Password]
+    ,[hash_Password]
+    ,[status_Aap]
+    ,[status_Admin]) 
+    VALUES(@nameUser, @passwordUser, @saltPassword, @hashPassword, @statusAap, @statusAdmin)
+END

@@ -1,0 +1,12 @@
+﻿use hotelExtrados
+GO
+
+CREATE TABLE listUser (
+    id_User INT PRIMARY KEY IDENTITY(1,1),
+    name_User VARCHAR(20) not null,
+    password_User VARCHAR(20) not null,
+	salt_Password VARBINARY(MAX) not null,
+    hash_Password VARBINARY(MAX) not null,
+	status_Aap bit default 0,
+	status_Admin bit default 0
+);

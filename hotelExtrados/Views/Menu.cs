@@ -38,9 +38,9 @@ namespace hotelExtrados.Menu
             Console.WriteLine("ENTER PASSWORD");
             newUser.Password_User = Console.ReadLine();
 
+            #region REQUIRED_FALTA_SABER_APLICARLO
             //var context = new ValidationContext(db_newUser, null, null);
             //var results = new List<ValidationResult>();
-
             //var isValid = Validator.TryValidateObject(db_newUser, context, results, true);
             //if (!isValid)
             //{
@@ -49,6 +49,7 @@ namespace hotelExtrados.Menu
             //        Console.WriteLine(validationResult.ErrorMessage);
             //    }
             //}
+            #endregion
 
             bool valid = db_newUser.ValidateLogin(newUser.Name_User, newUser.Password_User);
 

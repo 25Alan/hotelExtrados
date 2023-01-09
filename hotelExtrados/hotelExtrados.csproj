@@ -90,5 +90,10 @@
   <ItemGroup>
     <Folder Include="Controllers\" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="SqlServer\Script_ListUser.txt" />
+    <Content Include="SqlServer\Script_Procedure_Register.txt" />
+    <Content Include="SqlServer\Script_Room.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace hotelExtrados.Business.Services
 {
-    internal class Aap
+    public class Aap
     {
+        public void Book()
+        {
+
+        }
     }
 }
