@@ -1,4 +1,6 @@
-﻿using hotelExtrados.Models;
+﻿using hotelExtrados.Business.Services;
+using hotelExtrados.Data.Models;
+using hotelExtrados.Models;
 using hotelExtrados.Services;
 using System;
 using System.Collections.Generic;
@@ -12,10 +14,17 @@ namespace hotelExtrados.Menu
 {
     public class Menu
     {
-        private Login_Register db_newUser = new Login_Register();
-        private UserControl newUser = new UserControl();
+        private Login_Register login_register = new Login_Register();
+        private UserInput newUser = new UserInput();
+        private PasswordI password = new PasswordI();
+
+        private Room room = new Room();
+        private Aap aap = new Aap();
+        private Client client = new Client();
+        private Book_details book_Details = new Book_details();
+
         ConsoleKeyInfo option = new ConsoleKeyInfo();
-        public Menu(){}
+        public Menu() { }
 
         public void MenuPrincipal()
         {
@@ -36,24 +45,8 @@ namespace hotelExtrados.Menu
             Console.WriteLine("ENTER USERNAME");
             newUser.Name_User = Console.ReadLine();
             Console.WriteLine("ENTER PASSWORD");
-            newUser.Password_User = Console.ReadLine();
+            password.Password = Console.ReadLine();
 
-            #region REQUIRED_FALTA_SABER_APLICARLO
-            //var context = new ValidationContext(db_newUser, null, null);
-            //var results = new List<ValidationResult>();
-            //var isValid = Validator.TryValidateObject(db_newUser, context, results, true);
-            //if (!isValid)
-            //{
-            //    foreach (var validationResult in results)
-            //    {
-            //        Console.WriteLine(validationResult.ErrorMessage);
-            //    }
-            //}
-            #endregion
-
-            bool valid = db_newUser.ValidateLogin(newUser.Name_User, newUser.Password_User);
-
-            if (valid == true) Console.WriteLine("CONECTADO"); else Console.WriteLine("USUARIO O CONTRASEÑA NO VALIDA");
             Console.Read();
             Console.Clear();
         }
@@ -67,12 +60,13 @@ namespace hotelExtrados.Menu
             Console.WriteLine("ENTER USERNAME");
             newUser.Name_User = Console.ReadLine();
             Console.WriteLine("ENTER PASSWORD");
-            newUser.Password_User = Console.ReadLine();
+            password.Password = Console.ReadLine();
             Console.WriteLine("SELECT RANGE\n[1] - Aap (Public Attention)\n[2] - Admin (Administrator)");
             option = Console.ReadKey();
             if (option.Key == ConsoleKey.NumPad1) newUser.Status_Aap = true; else newUser.Status_Admin = true;
-            db_newUser.CreateUser(newUser);
-            if (option.Key == ConsoleKey.Escape) Console.Clear();  MenuPrincipal();
+
+            login_register.CreateUser(password.Password, newUser);
+
             Console.Clear();
             MenuPrincipal();
         }
@@ -84,6 +78,9 @@ namespace hotelExtrados.Menu
             Console.WriteLine("[1] - State of the rooms\n[2] - New client\n[3] - Book Room\n[4] - Change room status");
             option = Console.ReadKey();
             if (option.Key == ConsoleKey.NumPad1 || option.Key == ConsoleKey.D1) StateoftheRooms();
+            if (option.Key == ConsoleKey.NumPad2 || option.Key == ConsoleKey.D2) newClient();
+            if (option.Key == ConsoleKey.NumPad3 || option.Key == ConsoleKey.D3) newbookDetails();
+            if (option.Key == ConsoleKey.NumPad4 || option.Key == ConsoleKey.D4) newChangeStatus();
         }
 
         public void MenuAdmin()
@@ -94,9 +91,41 @@ namespace hotelExtrados.Menu
             int opc = Convert.ToInt32(Console.ReadLine());
         }
 
-        public void StateoftheRooms()
+        private void StateoftheRooms()
         {
-            Console.WriteLine("ESTADOS");
+            aap.ListRoom();
+        }
+
+        private void newClient()
+        {
+            Console.Title = "REGISTER CLIENT";
+            Console.WriteLine("DATA:");
+            Console.WriteLine("DNI:");
+            client.Dni_Client = Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine("NAME:");
+            client.Name_Client = Console.ReadLine();
+            Console.WriteLine("SURNAME:");
+            client.Surname_Client = Console.ReadLine();
+            Console.WriteLine("EMAIL: ");
+            client.Email_Client = Console.ReadLine();
+        }
+
+        private void newbookDetails()
+        {
+            Console.Title = "DETAILS BOOK";
+            Console.WriteLine("SINCE DATE:");
+            book_Details.Since_Date = Convert.ToDateTime(Console.ReadLine());
+            Console.WriteLine("UNTIL DATE:");
+            book_Details.Until_Date = Convert.ToDateTime(Console.ReadLine());
+        }
+
+        private void newChangeStatus()
+        {
+            Console.Title = "CHANGE STATUS";
+            Console.WriteLine("NUMBER ROOM:");
+            room.Number_Room = Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine("NEW STATUS:");
+            book_Details.Status_Room = Console.ReadLine();
         }
     }
 }

@@ -15,9 +15,8 @@ namespace hotelExtrados.Data.Models
         public decimal Price_Night { get; set; }
     }
 
-
     public class RoomVip : Room
     {
-
+        public bool Status_Vip { get; set; }
     }
 }

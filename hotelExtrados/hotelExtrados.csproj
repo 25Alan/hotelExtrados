@@ -75,6 +75,7 @@
     <Compile Include="Business\Services\Aap.cs" />
     <Compile Include="Business\Services\Admin.cs" />
     <Compile Include="Data\Models\Booking.cs" />
+    <Compile Include="Data\Models\Book_details.cs" />
     <Compile Include="Data\Models\Client.cs" />
     <Compile Include="Data\Models\Room.cs" />
     <Compile Include="Views\Menu.cs" />

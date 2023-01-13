@@ -9,13 +9,10 @@ using System.Threading.Tasks;
 
 namespace hotelExtrados.Models
 {
-    public class UserControl
+    public class UserInput
     {
         [Required(ErrorMessage = "Name is required")]
         public string Name_User { get; set; }
-
-        [Required(ErrorMessage = "Password is required")]
-        public string Password_User { get; set; }
 
         public SqlBinary Salt_Password { get; set; }
 
@@ -24,5 +21,10 @@ namespace hotelExtrados.Models
         public bool Status_Aap { get; set; }
 
         public bool Status_Admin { get; set; }
+    }
+
+    public class PasswordI
+    {
+        public string Password { get; set; }    
     }
 }
