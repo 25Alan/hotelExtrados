@@ -9,8 +9,12 @@ namespace hotelExtrados.Data.Models
     public class Book_details
     {
         public int Id_book_Booking { get; set; }
-        public string Status_Room { get; set; }
         public DateTime Since_Date { get; set; }
         public DateTime Until_Date { get; set; }
+    }
+
+    public class Book_Number_Room : Book_details
+    {
+        public int number_Select { get; set; }
     }
 }
