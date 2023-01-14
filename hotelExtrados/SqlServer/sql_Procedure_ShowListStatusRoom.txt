@@ -1,0 +1,17 @@
+use hotelExtrados
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE showListRoomStatus
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	SELECT number_Room,number_Beds,price_Night,status_Room
+	from room;
+END
+GO

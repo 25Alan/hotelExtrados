@@ -1,0 +1,5 @@
+use hotelExtrados
+GO
+
+ALTER TABLE booking_client
+ADD CONSTRAINT CHK_Dni CHECK (LEN(dni_Client) = 8);

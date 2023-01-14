@@ -1,0 +1,21 @@
+use hotelExtrados
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE  newClient_booking_Client
+   @dni_Client int,
+   @name_Client varchar(20),
+   @surname_Client varchar(20),
+   @email_Client varchar(50)
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	INSERT INTO booking_client (dni_Client, name_Client, surname_Client, email_Client) 
+	VALUES (@dni_Client, @name_Client, @surname_Client, @email_Client);
+
+END
+GO

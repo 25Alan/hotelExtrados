@@ -1,15 +1,16 @@
-Ôªøuse hotelExtrados
+use hotelExtrados
 GO
 
 CREATE TABLE room (
 id_Room Int primary Key IDENTITY(1,1),
-number_Room smallint IDENTITY(100,1) not null, -- Ac√° puse desde 100 para diferenciar un poquito del id_Room, y otra por q en varios hoteles v√≠ q empiezan de 100.
+number_Room smallint not null, 
 number_Beds tinyint default 0,
-price_Night decimal(4,2) not null,
+price_Night decimal(4,1) not null,
+status_Room varchar(20) default 'Disponible'
 )
 
--- Tengo dudas con dejar el status vip y normal en esa ubicaci√≥n, por que a la hora de comprobar para decir el precio por noche de la 
--- habitaci√≥n tendr√≠a que navegar entre 2 tablas.
+-- Tengo dudas con dejar el status vip y normal en esa ubicaciÛn, por que a la hora de comprobar para decir el precio por noche de la 
+-- habitaciÛn tendrÌa que navegar entre 2 tablas.
 CREATE TABLE room_status (
 id_Status_Room int FOREIGN KEY REFERENCES room(id_Room),
 status_Vip bit default 0,
@@ -21,23 +22,31 @@ status_RoomService bit default 0,
 status_Whirlpool bit default 0,
 )
 
+use hotelExtrados
+GO
+
 CREATE TABLE booking_client (
-dni_Client int primary key not null,
+dni_Client int primary key not null, -- Modificado / AGREGADO PARA ACEPTAR LONGITUD DE 8 SOLAMENTE
 name_Client varchar(20) not null,
 surname_Client varchar(20) not null,
-email_Client varchar(20) not null, -- AC√Å CONVIENE NVARCHAR ??
+email_Client varchar(50) not null, 
 )
 
--- ESTA TABLA VENDR√çA A SER LA CENTRAL POR AS√ç DECIRLO, DESDE AC√Å HAGO TODA LA MOVIDA DE RESERVAR.
+use hotelExtrados
+GO
+
+-- ESTA TABLA VENDRÕA A SER LA CENTRAL POR ASÕ DECIRLO, DESDE AC¡ HAGO TODA LA MOVIDA DE RESERVAR.
 CREATE TABLE booking_room (
 id_Booking int primary key identity(1,1),
 id_Booking_Room int FOREIGN KEY REFERENCES room(id_Room),
 id_Booking_Client int FOREIGN KEY REFERENCES booking_client(dni_Client),
 )
 
+use hotelExtrados
+GO
+
 CREATE TABLE book_details (
 id_book_Booking int FOREIGN KEY REFERENCES booking_room(id_Booking),
-status_Room varchar(20) default null,
 since_Date datetime default getdate(),
 until_Date datetime not null,
 )

@@ -1,0 +1,29 @@
+use hotelExtrados
+GO
+
+
+BEGIN TRANSACTION
+        --INSERT INTO booking_client (dni_Client, name_Client, surname_Client, email_Client) VALUES (40598221, 'ivan', 'romero', 'romeroalan71@gmail.com')
+        INSERT INTO booking_room (id_Booking_Room, id_Booking_Client) VALUES (1, 2)
+		INSERT INTO book_details (id_book_Booking, status_Room, since_Date, until_Date) VALUES (1, 'ocupado', GETDATE(), '2022-12-31 23:59:59');
+    COMMIT TRANSACTION
+--id_Booking int primary key identity(1,1),id_Booking_Room int FOREIGN KEY REFERENCES room(id_Room),id_Booking_Client int FOREIGN KEY REFERENCES booking_client(dni_Client),
+CREATE PROCEDURE insert_newBook
+    @id_Booking_Client int,
+	@number_Room int,
+	@dni_Client int,
+	@name_Client varchar(20),
+	@surname_Client varchar(20),
+	@email_Client varchar(50),
+	@id_Book_Booking int,
+	@status_Room varchar(20),
+	@since_Date datetime,
+	@until_Date datetime
+AS
+BEGIN
+    BEGIN TRANSACTION
+        INSERT INTO booking_room (id_Booking_Room, id_Booking_Client) VALUES (@id_Booking_Client, @id_Book_Booking)
+        INSERT INTO booking_client (dni_Client, name_Client, surname_Client, email_Client) VALUES (@dni_Client, @name_Client, @surname_Client, @email_Client)
+		INSERT INTO book_details (id_book_Booking, status_Room, since_Date, until_Date) VALUES (@id_Book_Booking, @status_Room, @since_Date, @until_Date)
+    COMMIT TRANSACTION
+END
