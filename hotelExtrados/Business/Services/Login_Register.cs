@@ -1,5 +1,4 @@
 ﻿using Dapper;
-using System;
 using System.Configuration;
 using System.Data.SqlClient;
 using System.Linq;
@@ -7,11 +6,6 @@ using hotelExtrados.Models;
 using System.Data;
 using System.Data.SqlTypes;
 using System.Text;
-using System.Threading;
-using System.Collections.Generic;
-using hotelExtrados.Data.Models;
-using System.Security.Policy;
-using System.Net.Mail;
 
 namespace hotelExtrados.Services
 {
@@ -21,16 +15,23 @@ namespace hotelExtrados.Services
             ConfigurationManager.ConnectionStrings["hotelExtrados"].ConnectionString.ToString();
         SqlConnection connectSql = new SqlConnection(connectHotel);
 
+        /// <summary>
+        /// Valid password check and login
+        /// </summary>
+        /// <param name="passwordInput">Object with password</param>
+        /// <param name="name_User">Username entered</param>
+        /// <returns>True if password is valid - False if password is not valid</returns>
         public bool LoginUser(PasswordI passwordInput, string name_User)
         {
-            using (connectSql)
-            {
+            connectSql.Open();
                 string sql = @"SELECT hash_Password FROM listUser WHERE name_User = @name_User";
+                var user = connectSql.Query(sql, new { name_User }).FirstOrDefault();
 
-                var user = connectSql.Query<UserInput>(sql, new { name_User }).ToList();
+            byte[] hashBytes = (byte[])user.hash_Password;
+            SqlBinary hashBinary = new SqlBinary(hashBytes);
+            connectSql.Close();
 
-                return VerifyPassword(passwordInput.Password, user.Select(x => x.Hash_Password).FirstOrDefault().Value);
-            }
+            return VerifyPassword(passwordInput.Password, hashBinary);
         }
 
         /// <summary>
@@ -43,8 +44,7 @@ namespace hotelExtrados.Services
             string salt, hash;
             CreatePassword(passwordInput, out salt, out hash);
 
-            using (connectSql)
-            {
+            connectSql.Open();
                 var saltBinary = new SqlBinary(Encoding.UTF8.GetBytes(salt));
                 var hashBinary = new SqlBinary(Encoding.UTF8.GetBytes(hash));
 
@@ -55,16 +55,42 @@ namespace hotelExtrados.Services
                 parameters.Add("@statusAap", db_user.Status_Aap);
                 parameters.Add("@statusAdmin", db_user.Status_Admin);
                 connectSql.Execute("newUserRegister", parameters, commandType: CommandType.StoredProcedure);
-            }
+            connectSql.Close();
         }
 
-        public void CreatePassword(string password, out string salt, out string hash)
+        /// <summary>
+        /// Validate Role
+        /// </summary>
+        /// <param name="name_User">Username entered</param>
+        /// <returns>True = Admin / False = Aap</returns>
+        public bool ValidateRole(string name_User)
+        {
+            connectSql.Open();
+                string sql = @"SELECT status_Admin FROM listUser WHERE name_User = @name_User";
+                var query = connectSql.ExecuteScalar<bool>(sql, new { name_User });
+            connectSql.Close();
+            return query;
+        }
+
+        /// <summary>
+        /// Hash the entered password
+        /// </summary>
+        /// <param name="password">Password entered</param>
+        /// <param name="salt">Salt generated</param>
+        /// <param name="hash">Hash generated</param>
+        private void CreatePassword(string password, out string salt, out string hash)
         {
             salt = BCrypt.Net.BCrypt.GenerateSalt();
             hash = BCrypt.Net.BCrypt.HashPassword(password, salt);            
         }
 
-        public bool VerifyPassword(string passwordInput, SqlBinary storedHash)
+        /// <summary>
+        /// Password verification
+        /// </summary>
+        /// <param name="passwordInput">Password entered</param>
+        /// <param name="storedHash">Hash saved in database</param>
+        /// <returns>True if password is valid | False if password is not valid</returns>
+        private bool VerifyPassword(string passwordInput, SqlBinary storedHash)
         {
             byte[] hashBytes = storedHash.Value;
             string hash = Encoding.UTF8.GetString(hashBytes);
@@ -73,7 +99,7 @@ namespace hotelExtrados.Services
     }
 }
 
-#region 1INTENTO
+#region Primer_INTENTO
 //SqlBinary hashInput = Hash(passwordInput);
 //using (connectSql)
 //{
