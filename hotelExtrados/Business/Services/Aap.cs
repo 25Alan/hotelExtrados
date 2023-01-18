@@ -18,43 +18,43 @@ namespace hotelExtrados.Business.Services
         /// <summary>
         /// List of rooms with its properties
         /// </summary>
-        public void ListRoomProperties ()
+        public void listRoomProperties()
         {
-            connectSql.Open ();
-                List<Room_status> rooms = connectSql.Query<Room_status>("showListRoom", commandType:CommandType.StoredProcedure).ToList();
+            connectSql.Open();
+            List<Room_status> rooms = connectSql.Query<Room_status>("showListRoom", commandType: CommandType.StoredProcedure).ToList();
 
-                foreach (var room in rooms )
-                {
-                    Console.ForegroundColor= ConsoleColor.Red;
-                    Console.WriteLine("-----------------------------------------------");
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                    #region CWList
-                    Console.WriteLine
-                    ($"[Number Room: {room.Number_Room}]\n[Number Beds: {room.Number_Beds}]\n[Status Normal:{room.Status_Normal}]\n[Status VIP: {room.Status_Vip}]\n[Status TV: {room.Status_Tv}]\n[Status Garage: {room.Status_Garage}]\n[Status BreakFast: {room.Status_BreakFast}]\n[Status Room Service: {room.Status_RoomService}]\n[Status Whirlpool: {room.Status_Whirlpool}]"); 
-                    #endregion
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("-----------------------------------------------");
-                }
+            foreach (var room in rooms)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("-----------------------------------------------");
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                #region CWList
+                Console.WriteLine
+                ($"[Number Room: {room.Number_Room}]\n[Number Beds: {room.Number_Beds}]\n[Status Normal:{room.Status_Normal}]\n[Status VIP: {room.Status_Vip}]\n[Status TV: {room.Status_Tv}]\n[Status Garage: {room.Status_Garage}]\n[Status BreakFast: {room.Status_BreakFast}]\n[Status Room Service: {room.Status_RoomService}]\n[Status Whirlpool: {room.Status_Whirlpool}]");
+                #endregion
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("-----------------------------------------------");
+            }
             connectSql.Close();
         }
 
         /// <summary>
         /// List of rooms with their prices and status 
         /// </summary>
-        public void ListRoomStatus()
+        public void listRoomStatus()
         {
             connectSql.Open();
-                List<Room> rooms = connectSql.Query<Room>("showListRoomStatus", commandType: CommandType.StoredProcedure).ToList();
+            List<Room> rooms = connectSql.Query<Room>("showListRoomStatus", commandType: CommandType.StoredProcedure).ToList();
 
-                foreach (var room in rooms)
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("------------------------");
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                    Console.WriteLine($"Number Room: {room.Number_Room}\nNumber Beds: {room.Number_Beds}\nPrice Night: {room.Price_Night}\nStatus Room: {room.Status_Room}");
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("------------------------");
-                }
+            foreach (var room in rooms)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("------------------------");
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine($"Number Room: {room.Number_Room}\nNumber Beds: {room.Number_Beds}\nPrice Night: {room.Price_Night}\nStatus Room: {room.Status_Room}");
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("------------------------");
+            }
             connectSql.Close();
         }
 
@@ -65,10 +65,10 @@ namespace hotelExtrados.Business.Services
         public void newClient(Client newClient)
         {
             connectSql.Open();
-                int newCl = connectSql.Execute("newClient_booking_Client", newClient, commandType: CommandType.StoredProcedure);
+            int newCl = connectSql.Execute("newClient_booking_Client", newClient, commandType: CommandType.StoredProcedure);
 
-                Console.WriteLine($"{newCl} new client add");
-                Console.Read();
+            Console.WriteLine($"{newCl} new client add");
+            Console.Read();
             connectSql.Close();
         }
 
@@ -77,28 +77,30 @@ namespace hotelExtrados.Business.Services
         /// </summary>
         public void newBook(int id_Booking_Room, int id_Booking_Client)
         {
-        connectSql.Open();
-        DynamicParameters parameters = new DynamicParameters();
-        parameters.Add("@id_Booking_Room", id_Booking_Room, DbType.Int32);
-        parameters.Add("@id_Booking_Client", id_Booking_Client, DbType.Int32);
-        var confirmBook = connectSql.Execute("newBook", parameters, commandType:CommandType.StoredProcedure);
-        connectSql.Close();
-        try
-        {
-            if (confirmBook > 0) Console.WriteLine($"{confirmBook} confirmed reservation");
-            else Console.WriteLine("Insert failed");
-        }
-        catch (Exception error)
-        {
-            Console.WriteLine($"Error, could not save the information | {error.Message}");
-        }
+            try
+            {
+                connectSql.Open();
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("@id_Booking_Room", id_Booking_Room, DbType.Int32);
+                parameters.Add("@id_Booking_Client", id_Booking_Client, DbType.Int32);
+                var confirmBook = connectSql.Execute("newBook", parameters, commandType: CommandType.StoredProcedure);
+
+                Console.WriteLine($"{confirmBook} add");
+                connectSql.Close();
+                if (confirmBook > 0)Console.WriteLine($"{confirmBook} confirmed reservation");
+                else Console.WriteLine("Insert failed");
+            }
+            catch (Exception error)
+            {
+                Console.WriteLine($"Error, could not save the information | {error.Message}");
+            }
         }
 
         public void newBookDetails(Book_details book_details)
         {
             int id = selectId();
             connectSql.Open();
-            DynamicParameters parameters= new DynamicParameters();
+            DynamicParameters parameters = new DynamicParameters();
             parameters.Add("@id_book_Booking", id, DbType.Int32);
             parameters.Add(@"since_Date", book_details.Since_Date, DbType.DateTime);
             parameters.Add("@until_Date", book_details.Until_Date, DbType.DateTime);
@@ -111,6 +113,13 @@ namespace hotelExtrados.Business.Services
             connectSql.Open();
             string sql = @"UPDATE room SET status_Room = 'Ocupado' WHERE number_Room = @number_Room";
             var update = connectSql.Execute(sql, new { number_Room });
+            connectSql.Close();
+        }
+
+        public void updateStatusRoom()
+        {
+            connectSql.Open();
+
             connectSql.Close();
         }
 
